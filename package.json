@@ -1,0 +1,30 @@
+{
+  "name": "softhy_test",
+  "version": "1.0.0",
+  "description": "just a test",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll",
+    "build": "./node_modules/.bin/babel src --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zael97/softhy_test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zael97/softhy_test/issues"
+  },
+  "homepage": "https://github.com/Zael97/softhy_test#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "sequelize": "^6.6.2"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.12.1"
+  }
+}
