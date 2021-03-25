@@ -1,19 +1,24 @@
 const pool=require('../db');
+const path = require('path')
 exports.estudiante_post = async(req, res, next)=>{
         const { nombre, ap_paterno, ap_materno, grado, edad }= req.body;
-        const filename = req.file.originalname;
+        let filename='default-avatar.png';
+        if(req.file){
+            filename = req.file.filename+path.extname(req.file.originalname);
+        }
         pool.connect((err, client, done)=>{
         //const query ='call register('Anthony', 'Muñante', 'Chávez', 'segundo', '1995-11-06', '/uploads/avatar.png');'
-        const query = 'CALL register($1, $2, $3, $4,$5, $6) returning *';
-        const values =[nombre, ap_paterno, ap_materno, grado, edad, filename];
+        const query = 'CALL register($1, $2, $3, $4,$5, $6)';
+        const values =[nombre, ap_paterno, ap_materno, grado, edad,filename];
         client.query(query, values, (error, result)=>{
-            done();
             if(error){
-                res.status(400).json({error: error});
+                res.status(400).json({error: error.message});
             }
-            res.status(202).send({
-                status: 'SUccessful',
-                result: result.rows[0],
+            res.status(202).json({
+                status: 'Successful',
+                result: {
+                    nombre, ap_paterno, ap_materno, grado, edad, filename
+                },
             });
         })
     })
@@ -35,7 +40,7 @@ exports.grados_get = async(req, res, next)=>{
                    res.status(404).send({status: 'Failed',
                    message: 'No student information found'}); 
             }else{
-                res.status(200).send({status: 'Successful',
+                res.status(200).json({status: 'Successful',
                 message: 'Students Information retrieved',
                 students: result.rows});
             }  
