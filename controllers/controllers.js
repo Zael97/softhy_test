@@ -8,16 +8,17 @@ exports.estudiante_post = async(req, res, next)=>{
         }
         pool.connect((err, client, done)=>{
         //const query ='call register('Anthony', 'Muñante', 'Chávez', 'segundo', '1995-11-06', '/uploads/avatar.png');'
-        const query = 'CALL register($1, $2, $3, $4,$5, $6)';
+        const query = 'SELECT register($1, $2, $3, $4,$5, $6)';
         const values =[nombre, ap_paterno, ap_materno, grado, edad,filename];
         client.query(query, values, (error, result)=>{
             if(error){
                 res.status(400).json({error: error.message});
             }
+            let id=result.rows[0].register;
             res.status(202).json({
                 status: 'Successful',
                 result: {
-                    nombre, ap_paterno, ap_materno, grado, edad, filename
+                    id,nombre, ap_paterno, ap_materno, grado, edad, filename
                 },
             });
         })
@@ -25,14 +26,28 @@ exports.estudiante_post = async(req, res, next)=>{
 }
 
 exports.estudiante_delete = async(req, res, next)=>{
-
+    const id =req.query.id;
+    pool.connect((err,client,done)=>{
+        const query ='DELETE FROM estudiantes WHERE id = $1';
+        const values=[id,];
+        client.query(query,values, (error, result)=>{
+            //done();
+            console.log(query);
+            if(error){
+                res.status(400).json({error: error.message});
+            }
+            res.status(202).json({
+                status: 'Successful'
+            });
+        })
+    });
 }
 
 exports.grados_get = async(req, res, next)=>{
     pool.connect((err,client,done)=>{
         const query='SELECT * FROM grados';
         client.query(query, (error, result)=>{
-            done();
+            //done();
             if(error){
                 res.status(400).json({error: error.message});
             }
