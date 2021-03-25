@@ -1,6 +1,6 @@
 const pool=require('../db');
 const path = require('path')
-exports.estudiante_post = async(req, res, next)=>{
+exports.estudiantes_post = async(req, res, next)=>{
         const { nombre, ap_paterno, ap_materno, grado, edad }= req.body;
         let filename='default-avatar.png';
         if(req.file){
@@ -25,7 +25,7 @@ exports.estudiante_post = async(req, res, next)=>{
     })
 }
 
-exports.estudiante_delete = async(req, res, next)=>{
+exports.estudiantes_delete = async(req, res, next)=>{
     const id =req.query.id;
     pool.connect((err,client,done)=>{
         const query ='DELETE FROM estudiantes WHERE id = $1';
@@ -52,12 +52,10 @@ exports.grados_get = async(req, res, next)=>{
                 res.status(400).json({error: error.message});
             }
             if(result.rows<'1'){
-                   res.status(404).send({status: 'Failed',
-                   message: 'No student information found'}); 
+                   res.status(404).send({status: 'Failed'}); 
             }else{
                 res.status(200).json({status: 'Successful',
-                message: 'Students Information retrieved',
-                students: result.rows});
+                grados: result.rows});
             }  
         })
     });
@@ -65,4 +63,30 @@ exports.grados_get = async(req, res, next)=>{
 
 exports.reportes_get=async (req, res, next)=>{
 
+}
+exports.estudiantes_get=async(req,res,next)=>{
+    const id = req.query.id;
+    let query ='SELECT * FROM estudiantes';
+    const values=[]
+    if(id){
+        query ='SELECT * FROM estudiantes WHERE id = $1';
+        values.push(id);
+    }
+    pool.connect((err,client, done)=>{
+        client.query(query,values,(error, result)=>{
+            if(error){
+                res.status(400).json({error: error.message});
+            }
+            if(result.rows < '1') {
+                res.status(404).send({
+                status: 'Failed'
+                });
+              } else {
+                res.status(200).send({
+                status: 'Successful',
+                students: result.rows,
+                });
+              }
+        })
+    });
 }
