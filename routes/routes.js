@@ -2,7 +2,7 @@ const controllers = require('../controllers/controllers');
 const { Router } = require('express');
 const router = Router();
 const multer = require('multer');
-const upload = multer({dest:'../uploads/'});
+const upload = multer({dest:'uploads/'});
 
 
 router.post('/estudiante',upload.single('avatar'),controllers.estudiante_post);
