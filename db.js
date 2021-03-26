@@ -5,20 +5,21 @@ const config = {
     database: 'postgres',
     password: 'scorpio1995-',
     port: 5432,
-    max: 10, // max number of clients in the pool
+    max: 50, // max number of clients in the pool
     idleTimeoutMillis: 30000,
-  };
+    maxUses: 7500
+};
 
 
-  const pool = new pg.Pool(config);
+const pool = new pg.Pool(config);
 
-  pool.on('connect', ()=>{
-      console.log('connected to the database');
-  });
-  pool.on('remove', ()=>{
-      console.log('cliente removed');
-      process.exit(0);
-  });
+pool.on('connect', () => {
+    console.log('connected to the database');
+});
+pool.on('remove', () => {
+    console.log('cliente removed');
+    process.exit(0);
+});
 
 
-  module.exports=pool;
+module.exports = pool;
