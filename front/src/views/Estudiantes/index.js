@@ -41,7 +41,6 @@ export default {
             });
         },
         formatDateDynamically() {
-            console.log('==========>', this.selected);
             return this.formatDate(this.selected);
         }
     },
@@ -90,17 +89,55 @@ export default {
             return `${years} ${result_year} ${months} ${result_month}`;
         },
         onSubmit(event) {
-            console.log(event.target.nombre.value);
+            event.preventDefault();     
+            let nombreValido=false;
+            let paternoValido=false;
+            let maternoValido=false;
+            let gradoValido=false;
             const formData = new FormData();
-            formData.append('nombre', event.target.nombre.value);
-            formData.append('ap_paterno', event.target.ap_paterno.value);
-            formData.append('ap_materno', event.target.ap_materno.value);
-            formData.append('grado', event.target.grado.value);
-            formData.append('edad', event.target.edad.value);
-            formData.append('avatar', this.FILE, this.FILE.name);
-            axios.post('http://localhost:9000/estudiantes', formData, {}).then(res => {
-                console.log(res);
-            })
+            if((!event.target.nombre.value.trim()) || event.target.nombre.value.trim().length > 40 ){
+                event.target.nombre.classList.add('is-invalid');
+            }else{
+                nombreValido=true;
+                event.target.nombre.classList.remove('is-invalid');
+                event.target.nombre.classList.add('is-valid');
+            }
+            if((!event.target.ap_paterno.value.trim()) || event.target.ap_paterno.value.trim().length > 40){
+                event.target.ap_paterno.classList.add('is-invalid');
+            }else{
+                paternoValido=true;
+                event.target.ap_paterno.classList.remove('is-invalid');
+                event.target.ap_paterno.classList.add('is-valid');
+            }
+            if((!event.target.ap_materno.value.trim()) || event.target.ap_materno.value.trim().length > 40){
+                event.target.ap_materno.classList.add('is-invalid');
+            }else{
+                maternoValido=true;
+                event.target.ap_materno.classList.remove('is-invalid');
+                event.target.ap_materno.classList.add('is-valid');
+            }
+            if(event.target.grado.value=='Grado'){
+                event.target.grado.classList.add('is-invalid');
+            }else{
+                gradoValido=true;
+                event.target.grado.classList.remove('is-invalid');
+                event.target.grado.classList.add('is-valid');
+            }
+            if(!event.target.avatar.value){
+                formData.append('avatar',null);
+            }else{
+                formData.append('avatar', this.FILE, this.FILE.name);
+            }
+            if(nombreValido && paternoValido && maternoValido && gradoValido){
+                formData.append('nombre', event.target.nombre.value);
+                formData.append('ap_paterno', event.target.ap_paterno.value);
+                formData.append('ap_materno', event.target.ap_materno.value);
+                formData.append('grado', event.target.grado.value);
+                formData.append('edad', event.target.edad.value);
+                axios.post('http://localhost:9000/estudiantes', formData, {}).then(res => {
+                    console.log(res);
+                })
+            }
         },
         onFileUpload(event) {
             this.FILE = event.target.files[0];

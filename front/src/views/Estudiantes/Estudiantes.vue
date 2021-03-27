@@ -142,7 +142,7 @@
             <div class="row">
               <p>Nuevo Estudiante</p>
             </div>
-            <form @submit.prevent="onSubmit" class="needs-validation g-3">
+            <form @submit="onSubmit" class="needs-validation g-3">
               <div class="row">
                 <div class="col-6">
                   <div class="mt-3">
@@ -152,7 +152,7 @@
                       placeholder="Ingresar Nombre"
                       name="nombre"
                     />
-                    <div class="invalid-feedback">40 caracteres</div>
+                    <div id='nameValidation' class="invalid-feedback">máx 40 caracteres</div>
                   </div>
                 </div>
                 <div class="col-6">
@@ -163,7 +163,7 @@
                       placeholder="Apellido Paterno"
                       name="ap_paterno"
                     />
-                    <div class="invalid-feedback">40 caracteres</div>
+                    <div id='apPaternoValidation' class="invalid-feedback">máx 40 caracteres</div>
                   </div>
                 </div>
               </div>
@@ -176,7 +176,7 @@
                       placeholder="Apellido Materno"
                       name="ap_materno"
                     />
-                    <div class="invalid-feedback">40 caracteres</div>
+                    <div id='apMaternoValidation' class="invalid-feedback">máx 40 caracteres</div>
                   </div>
                 </div>
                 <div class="col-6">
@@ -186,7 +186,7 @@
                       aria-label="Default select example"
                       name="grado"
                     >
-                      <option selected>Grado</option>
+                      <option selected disabled>Grado</option>
                       <option
                         v-for="grado in grados"
                         :value="grado.nombre"
@@ -194,6 +194,7 @@
                         >{{ grado.nombre }}</option
                       >
                     </select>
+                    <div id='gradoValidation' class="invalid-feedback">Seleccione un grado</div>
                   </div>
                 </div>
               </div>
