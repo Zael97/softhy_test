@@ -1,2 +1,3 @@
 # softhy_test
-just a test
+## Project setup
+npm run start
