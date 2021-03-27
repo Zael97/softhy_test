@@ -2,23 +2,22 @@ const pool = require('../db');
 const Excel = require('exceljs');
 exports.estudiantes_post = async (req, res, next) => {
     const { nombre, ap_paterno, ap_materno, grado, edad } = req.body;
-    let filename = 'default-avatar.png';
+    let avatar = 'default-avatar.png';
     if (req.file) {
-        filename = req.file.filename;
+        avatar = req.file.filename;
     }
     pool.connect((err, client, done) => {
-        //const query ='call register('Anthony', 'Muñante', 'Chávez', 'segundo', '1995-11-06', '/uploads/avatar.png');'
-        const query = 'SELECT register($1, $2, $3, $4,$5, $6)';
-        const values = [nombre, ap_paterno, ap_materno, grado, edad, filename];
+        const query = 'SELECT registrar_estudiante($1, $2, $3, $4,$5, $6)';
+        const values = [nombre, ap_paterno, ap_materno, grado, edad, avatar];
         client.query(query, values, (error, result) => {
             if (error) {
                 res.status(400).json({ error: error.message });
             }
-            let id = result.rows[0].register;
+            let id = result.rows[0].registrar_estudiante;
             res.status(202).json({
                 status: 'Successful',
                 result: {
-                    id, nombre, ap_paterno, ap_materno, grado, edad, filename
+                    id, nombre, ap_paterno, ap_materno, grado, edad, avatar
                 },
             });
         })
@@ -26,13 +25,12 @@ exports.estudiantes_post = async (req, res, next) => {
 }
 
 exports.estudiantes_delete = async (req, res, next) => {
-    const id = req.query.id;
+    const nid_persona = req.query.id;
     pool.connect((err, client, done) => {
-        const query = 'DELETE FROM estudiantes WHERE id = $1';
-        const values = [id,];
+        const query = "DELETE FROM persona WHERE nid_persona = $1";
+        const values = [nid_persona,];
         client.query(query, values, (error, result) => {
             //done();
-            console.log(query);
             if (error) {
                 res.status(400).json({ error: error.message });
             }
@@ -45,7 +43,7 @@ exports.estudiantes_delete = async (req, res, next) => {
 
 exports.grados_get = async (req, res, next) => {
     pool.connect((err, client, done) => {
-        const query = 'SELECT * FROM grados';
+        const query = "SELECT concat(gra.desc_grado,'-',gra.nivel) AS nombre, gra.nid_grado AS orden FROM grado AS gra ORDER BY orden ASC";
         client.query(query, (error, result) => {
             //done();
             if (error) {
@@ -63,7 +61,7 @@ exports.grados_get = async (req, res, next) => {
     });
 }
 
-exports.reporte_get = async (req, res, next) => {
+/*exports.reporte_get = async (req, res, next) => {
     let query = "select concat(es.nombre, ' ',es.ap_paterno ,' ',es.ap_materno ) as estudiante, es.grado, mo.tipo as pension, mo.monto as monto from estudiantes as es inner join movimientos as mo on es.id=mo.estudiante";
     pool.connect((err, client, done) => {
         client.query(query, (error, result) => {
@@ -100,14 +98,15 @@ exports.reporte_get = async (req, res, next) => {
             }
         })
     })
-}
+}*/
 exports.estudiantes_get = async (req, res, next) => {
-    const id = req.query.id;
-    let query = 'SELECT * FROM estudiantes';
+    const nid_persona = req.query.id;
+    let query = "SELECT per.nid_persona AS id, per.nom_persona AS nombre, per.ape_pate_pers AS ap_paterno, per.ape_mate_pers AS ap_materno, concat(gra.desc_grado,'-',gra.nivel) AS grado, PER.fecha_naci AS edad, per.foto_ruta AS avatar FROM persona AS per INNER join grado AS gra ON per.nid_grado =gra.nid_grado ORDER BY nid_persona ASC";
     const values = []
-    if (id) {
-        query = 'SELECT * FROM estudiantes WHERE id = $1';
-        values.push(id);
+    if (nid_persona) {
+        //query = 'SELECT nid_persona AS id, nom_persona AS nombre, ape_pate_pers AS ap_paterno, ape_mate_pers AS ap_materno,  FROM estudiantes WHERE id = $1';
+        query ="SELECT per.nid_persona AS id, per.nom_persona AS nombre, per.ape_pate_pers AS ap_paterno, per.ape_mate_pers AS ap_materno, concat(gra.desc_grado,'-',gra.nivel) AS grado, per.fecha_naci AS edad, per.foto_ruta AS avatar FROM persona AS per INNER join grado AS gra ON per.nid_grado =gra.nid_grado WHERE nid_persona = $1 ORDER BY nid_persona ASC";
+        values.push(nid_persona); 
     }
     pool.connect((err, client, done) => {
         client.query(query, values, (error, result) => {

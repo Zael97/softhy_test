@@ -17,7 +17,7 @@ export default {
                 nombre: 'Nombre',
                 ap_paterno: 'Apellido',
                 grado: 'Grado',
-                edad: 'Edad',
+                edad: ref(new Date()),
                 avatar: "http://localhost:9000/imgs/default-avatar.png",
                 formatedDate: ''
             },
@@ -63,6 +63,7 @@ export default {
                 });
         },
         formatDate(d) {
+            console.log(d);
             let currentTime = new Date();
             let datePicker = new Date(d);
             let months = this.monthDiff(datePicker, currentTime);
@@ -135,7 +136,8 @@ export default {
                 formData.append('grado', event.target.grado.value);
                 formData.append('edad', event.target.edad.value);
                 axios.post('http://localhost:9000/estudiantes', formData, {}).then(res => {
-                    console.log(res);
+                console.log(res.data.result);   
+                this.students.push(res.data.result);
                 })
             }
         },

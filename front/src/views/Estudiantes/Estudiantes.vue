@@ -44,7 +44,7 @@
             Borrar <i class="fas fa-trash"></i>
           </button>
         </div>
-        <div class="col-12 col-md-9 pt-4 pe-5">
+        <div class="col-12 col-md-9 pt-4">
           <table class="table table-striped table-hover">
             <thead>
               <tr>
@@ -189,7 +189,7 @@
                       <option selected disabled>Grado</option>
                       <option
                         v-for="grado in grados"
-                        :value="grado.nombre"
+                        :value="grado.orden"
                         :key="grado.orden"
                         >{{ grado.nombre }}</option
                       >
@@ -229,6 +229,7 @@
                       type="file"
                       id="avatar"
                       @change="onFileUpload"
+                      accept="image/*"
                     />
                   </div>
                 </div>
